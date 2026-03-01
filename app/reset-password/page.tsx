@@ -21,6 +21,8 @@ function ResetPasswordForm() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const [formError, setFormError] = useState<string | null>(error);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     // If token exists, show reset password form
     if (token) {
@@ -68,11 +70,21 @@ function ResetPasswordForm() {
                         <form onSubmit={handleReset} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="newPassword">Password Baru</Label>
-                                <Input id="newPassword" type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} className="h-11" />
+                                <div className="relative">
+                                    <Input id="newPassword" type={showPassword ? "text" : "password"} placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} className="h-11 pr-11" />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" tabIndex={-1}>
+                                        <iconify-icon icon={showPassword ? "solar:eye-bold" : "solar:eye-closed-bold"} width="20" height="20"></iconify-icon>
+                                    </button>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-                                <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} className="h-11" />
+                                <div className="relative">
+                                    <Input id="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} className="h-11 pr-11" />
+                                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" tabIndex={-1}>
+                                        <iconify-icon icon={showConfirmPassword ? "solar:eye-bold" : "solar:eye-closed-bold"} width="20" height="20"></iconify-icon>
+                                    </button>
+                                </div>
                             </div>
                             <Button type="submit" disabled={loading} className="w-full h-11 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white">
                                 {loading ? "Memproses..." : "Reset Password"}
