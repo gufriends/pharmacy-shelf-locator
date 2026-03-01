@@ -79,14 +79,14 @@ export default function PharmacyPage() {
                 <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200/30 dark:bg-emerald-900/20 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-2xl mx-auto relative z-10 pt-12">
+            <div className="max-w-2xl mx-auto relative z-10 pt-8 sm:pt-12">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/25 mb-4">
-                        <iconify-icon icon="solar:buildings-bold-duotone" width="32" height="32" style={{ color: "white" }}></iconify-icon>
+                <div className="text-center mb-6 sm:mb-8">
+                    <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/25 mb-4">
+                        <iconify-icon icon="solar:buildings-bold-duotone" width="28" height="28" style={{ color: "white" }}></iconify-icon>
                     </div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Pharmacy</h1>
-                    <p className="text-sm text-slate-500 mt-1">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Pharmacy</h1>
+                    <p className="text-sm text-slate-500 mt-1 px-4">
                         {orgList.length > 0
                             ? "Pilih pharmacy atau buat baru"
                             : "Buat pharmacy pertama Anda untuk memulai"}
@@ -107,8 +107,8 @@ export default function PharmacyPage() {
                             <Card
                                 key={org.id}
                                 className={`border cursor-pointer transition-all hover:shadow-md ${activeOrg?.id === org.id
-                                        ? "border-teal-500 bg-teal-50/50 dark:bg-teal-950/20"
-                                        : "border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80"
+                                    ? "border-teal-500 bg-teal-50/50 dark:bg-teal-950/20"
+                                    : "border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80"
                                     }`}
                                 onClick={() => handleSelect(org.id)}
                             >

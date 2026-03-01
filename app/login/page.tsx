@@ -118,11 +118,11 @@ function LoginForm() {
     return (
         <div className="w-full max-w-md relative z-10">
             {/* Logo & Brand */}
-            <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/25 mb-4">
-                    <iconify-icon icon="solar:medical-kit-bold-duotone" width="32" height="32" style={{ color: "white" }}></iconify-icon>
+            <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg shadow-teal-500/25 mb-4">
+                    <iconify-icon icon="solar:medical-kit-bold-duotone" width="28" height="28" style={{ color: "white" }}></iconify-icon>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">rivpharma</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">rivpharma</h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Pharmacy Shelf Management</p>
             </div>
 
