@@ -1,0 +1,215 @@
+// Prisma Schema for rivpharma
+// Multi-tenant pharmacy shelf management with Better Auth + Organization plugin
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Better Auth Tables (Core)
+// ============================================
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  members       Member[]
+  invitations   Invitation[]
+
+  @@map("users")
+}
+
+model Session {
+  id                     String   @id
+  userId                 String
+  token                  String   @unique
+  expiresAt              DateTime
+  ipAddress              String?
+  userAgent              String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  activeOrganizationId   String?
+
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                String    @id
+  userId            String
+  accountId         String
+  providerId        String
+  accessToken       String?   @db.Text
+  refreshToken      String?   @db.Text
+  idToken           String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope             String?
+  password          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// ============================================
+// Better Auth Organization Plugin Tables
+// ============================================
+
+model Organization {
+  id          String    @id
+  name        String
+  slug        String    @unique
+  logo        String?
+  metadata    String?   @db.Text
+  createdAt   DateTime  @default(now())
+
+  members     Member[]
+  invitations Invitation[]
+  shelfLocations ShelfLocation[]
+  inventoryAudits InventoryAudit[]
+
+  @@map("organizations")
+}
+
+model Member {
+  id              String       @id
+  organizationId  String
+  userId          String
+  role            String       @default("member")
+  createdAt       DateTime     @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@map("members")
+}
+
+model Invitation {
+  id              String       @id
+  organizationId  String
+  email           String
+  role            String       @default("member")
+  status          String       @default("pending")
+  inviterId       String
+  expiresAt       DateTime
+  createdAt       DateTime     @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  inviter         User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("invitations")
+}
+
+// ============================================
+// Application Models (Scoped by Organization/Pharmacy)
+// ============================================
+
+/// Physical shelf location in the pharmacy (e.g., Rack 1, Cardiology Section)
+model ShelfLocation {
+  id          String         @id @default(cuid())
+  name        String         // e.g., "Rack 1", "Shelf A"
+  category    String?        // e.g., "Cardiology", "Antibiotics", "General"
+  description String?        // Optional description
+  aisleNumber String?        // Optional aisle reference
+  rowNumber   Int?           // Row number within the shelf
+  
+  // Virtual Rack Dimensions
+  columns     Int            @default(5) // Width of the rack
+  rows        Int            @default(1) // Height of the rack
+
+  // Multi-tenant scoping
+  pharmacyId  String?        // FK → Organization (pharmacy), optional for migration
+  pharmacy    Organization?  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  medicines   MedicineItem[]
+
+  @@index([pharmacyId])
+  @@index([category])
+  @@index([name])
+  @@map("shelf_locations")
+}
+
+/// Medicine item mapped to a shelf location
+model MedicineItem {
+  id               String        @id @default(cuid())
+  name             String        // Medicine name (e.g., "Paracetamol")
+  dosage           String?       // Dosage (e.g., "500mg", "10ml")
+  quantity         Int?          // Quantity on shelf
+  batchNumber      String?       // Batch/lot number
+  expiryDate       DateTime?     // Expiry date if available
+  notes            String?       // Additional notes
+  
+  // Spatial Mapping for Visual Rack
+  positionX        Int?          // 0-indexed column position (Left to Right)
+  positionY        Int?          // 0-indexed row position (Top to Bottom)
+  
+  extractedFromAI  Boolean       @default(true) // Whether this was extracted via AI
+  confidence       Float?        // AI confidence score (0-1)
+  imageUrl         String?       // Reference to the source image
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  shelfLocation    ShelfLocation @relation(fields: [shelfLocationId], references: [id], onDelete: Cascade)
+  shelfLocationId  String
+
+  @@index([name])
+  @@index([shelfLocationId])
+  @@map("medicine_items")
+}
+
+/// Audit log for tracking changes to medicine inventory
+model InventoryAudit {
+  id              String        @id @default(cuid())
+  action          String        // "CREATE", "UPDATE", "DELETE"
+  entityType      String        // "MedicineItem", "ShelfLocation"
+  entityId        String
+  changes         Json?         // JSON object containing the changes
+  performedBy     String?       // User ID who performed the action
+  
+  // Multi-tenant scoping
+  pharmacyId      String?       // FK → Organization
+  pharmacy        Organization? @relation(fields: [pharmacyId], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime      @default(now())
+
+  @@index([pharmacyId])
+  @@index([entityType, entityId])
+  @@index([performedBy])
+  @@map("inventory_audits")
+}
