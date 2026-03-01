@@ -52,40 +52,40 @@ export default function Home() {
     router.refresh();
   };
 
-  const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: "search", label: "Cari Obat", icon: "solar:minimalistic-magnifer-bold-duotone" },
-    { id: "browse", label: "Lihat Rak", icon: "solar:archive-bold-duotone" },
-    { id: "map", label: "Pemetaan", icon: "solar:camera-bold-duotone" },
+  const tabs: { id: Tab; label: string; mobileLabel: string; icon: string }[] = [
+    { id: "search", label: "Cari Obat", mobileLabel: "Cari", icon: "solar:minimalistic-magnifer-bold-duotone" },
+    { id: "browse", label: "Lihat Rak", mobileLabel: "Rak", icon: "solar:archive-bold-duotone" },
+    { id: "map", label: "Pemetaan", mobileLabel: "Peta", icon: "solar:camera-bold-duotone" },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50/50 to-white dark:from-slate-950 dark:to-slate-900">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-teal-100/80 bg-white/90 backdrop-blur-xl dark:bg-slate-950/90 dark:border-slate-800">
-        <div className="container mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3">
           <div className="flex items-center justify-between">
             {/* Brand */}
-            <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 p-2 shadow-lg shadow-teal-500/20">
-                <iconify-icon icon="solar:medical-kit-bold-duotone" width="24" height="24" style={{ color: "white" }}></iconify-icon>
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 p-1.5 sm:p-2 shadow-lg shadow-teal-500/20 shrink-0">
+                <iconify-icon icon="solar:medical-kit-bold-duotone" width="20" height="20" style={{ color: "white" }}></iconify-icon>
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">
                   rivpharma
                 </h1>
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium tracking-wide uppercase">
+                <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-medium tracking-wide uppercase truncate">
                   {activeOrg?.name || "Pharmacy Shelf Management"}
                 </p>
               </div>
             </div>
 
             {/* User Menu */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-md">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-md">
                   {session?.user?.name?.charAt(0)?.toUpperCase() || "U"}
                 </div>
                 <span className="hidden sm:block text-slate-700 dark:text-slate-300 font-medium max-w-[120px] truncate">
@@ -135,22 +135,23 @@ export default function Home() {
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex gap-1 mt-3 bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl">
+          <div className="flex gap-0.5 sm:gap-1 mt-2.5 sm:mt-3 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 sm:p-1 rounded-lg sm:rounded-xl">
             {tabs.map((tab) => (
               <Button
                 key={tab.id}
                 variant="ghost"
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-lg
+                  flex-1 h-9 sm:h-10 text-xs sm:text-sm font-medium transition-all duration-200 rounded-md sm:rounded-lg px-1 sm:px-3
                   ${activeTab === tab.id
                     ? "bg-white dark:bg-slate-700 shadow-sm text-teal-700 dark:text-teal-300"
                     : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                   }
                 `}
               >
-                <iconify-icon icon={tab.icon} width="18" height="18" className="mr-1.5"></iconify-icon>
-                {tab.label}
+                <iconify-icon icon={tab.icon} width="18" height="18" className="sm:mr-1.5"></iconify-icon>
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden ml-1">{tab.mobileLabel}</span>
               </Button>
             ))}
           </div>
@@ -158,15 +159,15 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 pb-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 pb-6 sm:pb-8">
         {/* Search Tab */}
         {activeTab === "search" && (
-          <div className="space-y-6">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="text-center mb-2 sm:mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Cari Lokasi Obat
               </h2>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm sm:text-base text-slate-500 dark:text-slate-400">
                 Cari obat dan temukan lokasinya di rak dalam hitungan detik
               </p>
             </div>
@@ -176,16 +177,16 @@ export default function Home() {
 
         {/* Browse Tab */}
         {activeTab === "browse" && (
-          <div className="space-y-6">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="text-center mb-2 sm:mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Visual Rack Browser
               </h2>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm sm:text-base text-slate-500 dark:text-slate-400">
                 Klik pada rak untuk melihat obat di dalamnya
               </p>
               {highlightedMedicine && (
-                <div className="mt-3 flex items-center justify-center gap-2">
+                <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
                   <Badge variant="secondary" className="py-1.5 bg-teal-50 text-teal-700 border border-teal-200">
                     <iconify-icon icon="solar:target-bold" width="14" height="14" className="mr-1"></iconify-icon>
                     {highlightedMedicine}
@@ -210,45 +211,45 @@ export default function Home() {
 
         {/* Map Tab */}
         {activeTab === "map" && (
-          <div className="space-y-6">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="text-center mb-2 sm:mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Pemetaan Inventaris Rak
               </h2>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm sm:text-base text-slate-500 dark:text-slate-400 px-4">
                 Gunakan AI untuk mengekstrak nama obat dari foto dan memetakan ke lokasi rak
               </p>
             </div>
 
             {/* Mode Selector */}
             <div className="w-full max-w-2xl mx-auto">
-              <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-6">
+              <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-4 sm:mb-6">
                 <Button
                   variant="ghost"
                   onClick={() => setMapMode("quick")}
                   className={`
-                    flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-lg
+                    flex-1 h-9 sm:h-10 text-xs sm:text-sm font-medium transition-all duration-200 rounded-lg
                     ${mapMode === "quick"
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm hover:text-white"
                       : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
                     }
                   `}
                 >
-                  <iconify-icon icon="solar:bolt-bold-duotone" width="18" height="18" className="mr-1.5"></iconify-icon>
+                  <iconify-icon icon="solar:bolt-bold-duotone" width="18" height="18" className="mr-1 sm:mr-1.5"></iconify-icon>
                   Quick Setup
                 </Button>
                 <Button
                   variant="ghost"
                   onClick={() => setMapMode("manual")}
                   className={`
-                    flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-lg
+                    flex-1 h-9 sm:h-10 text-xs sm:text-sm font-medium transition-all duration-200 rounded-lg
                     ${mapMode === "manual"
                       ? "bg-white dark:bg-slate-700 shadow-sm text-teal-700 dark:text-teal-300"
                       : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
                     }
                   `}
                 >
-                  <iconify-icon icon="solar:settings-bold-duotone" width="18" height="18" className="mr-1.5"></iconify-icon>
+                  <iconify-icon icon="solar:settings-bold-duotone" width="18" height="18" className="mr-1 sm:mr-1.5"></iconify-icon>
                   Manual Setup
                 </Button>
               </div>

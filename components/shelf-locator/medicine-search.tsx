@@ -47,7 +47,7 @@ function MedicineResultCard({
     <button
       onClick={onClick}
       className={`
-        w-full text-left p-4 rounded-xl border-2 transition-all duration-200
+        w-full text-left p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition-all duration-200
         ${isHighlighted
           ? "border-primary bg-primary/5 shadow-md"
           : "border-slate-200 bg-white hover:border-primary/30 hover:shadow-sm"}
@@ -56,7 +56,7 @@ function MedicineResultCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-lg text-slate-900 truncate">
+          <h4 className="font-semibold text-base sm:text-lg text-slate-900 truncate">
             {medicine.name}
           </h4>
           {medicine.dosage && (
@@ -86,10 +86,10 @@ function MedicineResultCard({
           )}
           <div
             className={`text-xs font-medium ${confidencePercent >= 90
-                ? "text-green-600"
-                : confidencePercent >= 70
-                  ? "text-yellow-600"
-                  : "text-slate-400"
+              ? "text-green-600"
+              : confidencePercent >= 70
+                ? "text-yellow-600"
+                : "text-slate-400"
               }`}
           >
             {confidencePercent}% match
@@ -99,7 +99,7 @@ function MedicineResultCard({
 
       {/* Location Guide - the killer feature */}
       {medicine.locationGuide && (
-        <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg">
+        <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg">
           <p className="text-sm text-blue-800 leading-relaxed">
             {medicine.locationGuide}
           </p>
@@ -159,7 +159,7 @@ export function MedicineSearch({ onResultClick }: MedicineSearchProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2">
+        <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
           <span>🔍</span>
           AI Medicine Search
         </CardTitle>
@@ -172,22 +172,25 @@ export function MedicineSearch({ onResultClick }: MedicineSearchProps) {
         <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Ketik nama obat... (e.g., 'para', 'amox', 'obat flu')"
+            placeholder="Ketik nama obat... (e.g., 'para', 'amox')"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="h-12 text-base"
+            className="h-11 sm:h-12 text-sm sm:text-base"
           />
           <Button
             size="lg"
             onClick={handleSearch}
             disabled={!query.trim() || searchMutation.isPending}
-            className="h-12 px-6"
+            className="h-11 sm:h-12 px-4 sm:px-6 shrink-0"
           >
             {searchMutation.isPending ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
             ) : (
-              "Search"
+              <>
+                <iconify-icon icon="solar:minimalistic-magnifer-bold" width="18" height="18" className="sm:hidden"></iconify-icon>
+                <span className="hidden sm:inline">Search</span>
+              </>
             )}
           </Button>
         </div>

@@ -55,17 +55,17 @@ function RackCard({
     <button
       onClick={onClick}
       className={`
-        relative w-full p-4 rounded-xl border-2 transition-all duration-300
+        relative w-full p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition-all duration-300
         ${colors.bg} ${colors.border}
         hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]
         ${isHighlighted ? "ring-4 ring-teal-500 ring-offset-2 shadow-lg" : ""}
-        min-h-[120px] flex flex-col text-left group
+        min-h-[100px] sm:min-h-[120px] flex flex-col text-left group
       `}
     >
       {/* Rack Header */}
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h3 className={`font-bold text-lg ${colors.text}`}>{rack.name}</h3>
+          <h3 className={`font-bold text-base sm:text-lg ${colors.text} truncate`}>{rack.name}</h3>
           {rack.category && (
             <Badge variant="outline" className="mt-1 text-xs border-current/20">
               {rack.category}
@@ -174,10 +174,10 @@ function MedicineList({ rack }: { rack: RackVisualization }) {
         Layout Visual ({columns}×{rows})
       </div>
       <div
-        className="grid gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-x-auto"
+        className="grid gap-1.5 sm:gap-2 p-2 sm:p-3 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-x-auto"
         style={{
-          gridTemplateColumns: `repeat(${columns}, minmax(120px, 1fr))`,
-          gridTemplateRows: `repeat(${rows}, minmax(100px, auto))`
+          gridTemplateColumns: `repeat(${columns}, minmax(90px, 1fr))`,
+          gridTemplateRows: `repeat(${rows}, minmax(80px, auto))`
         }}
       >
         {gridCells.map((cell, idx) => (
@@ -250,7 +250,7 @@ export function VisualRack({ highlightedMedicine, onRackClick }: VisualRackProps
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <Skeleton key={i} className="h-32 rounded-xl" />
           ))}
@@ -290,7 +290,7 @@ export function VisualRack({ highlightedMedicine, onRackClick }: VisualRackProps
             {aisle.rows.map((row) => (
               <div key={row.name} className="space-y-2">
                 <h4 className="text-sm font-medium text-slate-500 ml-2">{row.name}</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                   {row.racks.map((rack) => (
                     <RackCard
                       key={rack.id}
