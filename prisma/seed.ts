@@ -8,7 +8,7 @@ const connectionString = process.env.DATABASE_URL!;
 console.log("Connecting to database...");
 
 // Pool with SSL support for self-signed certificates
-const pool = new Pool({ 
+const pool = new Pool({
   connectionString,
   ssl: { rejectUnauthorized: false },
 });
@@ -70,7 +70,27 @@ async function main() {
 
     if (!existing) {
       await prisma.shelfLocation.create({
-        data: location,
+        data: {
+          name: location.name,
+          category: location.category ? {
+            connectOrCreate: {
+              where: {
+                pharmacyId_name: {
+                  pharmacyId: "system", // Use a placeholder or null if pharmacy scoping is needed
+                  name: location.category,
+                }
+              },
+              create: {
+                name: location.category,
+                pharmacyId: "system",
+                color: "blue",
+              }
+            }
+          } : undefined,
+          description: location.description,
+          aisleNumber: location.aisleNumber,
+          rowNumber: location.rowNumber,
+        },
       });
       console.log(`Created: ${location.name}`);
     } else {

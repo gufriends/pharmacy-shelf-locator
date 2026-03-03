@@ -67,13 +67,27 @@ export async function POST(request: NextRequest): Promise<NextResponse<SaveResul
                 const location = await tx.shelfLocation.create({
                     data: {
                         name: shelf.suggestedName || `rack ${i + 1}`,
-                        category: shelf.category,
+                        category: shelf.category ? {
+                            connectOrCreate: {
+                                where: {
+                                    pharmacyId_name: {
+                                        pharmacyId: authResult.pharmacyId,
+                                        name: shelf.category.trim(),
+                                    },
+                                },
+                                create: {
+                                    name: shelf.category.trim(),
+                                    pharmacyId: authResult.pharmacyId,
+                                    color: "blue",
+                                },
+                            },
+                        } : undefined,
                         description: `Auto-created by Quick Setup`,
                         aisleNumber: aisleNumber || null,
                         rowNumber: i + 1,
                         columns: shelf.columns || 5,
                         rows: shelf.rows || 1,
-                        pharmacyId: authResult.pharmacyId,
+                        pharmacy: { connect: { id: authResult.pharmacyId } },
                     },
                 });
 

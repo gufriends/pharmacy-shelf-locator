@@ -64,7 +64,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SearchResp
           select: {
             id: true,
             name: true,
-            category: true,
+            category: { select: { name: true } },
             aisleNumber: true,
             rowNumber: true,
           },
@@ -74,7 +74,13 @@ export async function GET(request: NextRequest): Promise<NextResponse<SearchResp
 
     return NextResponse.json({
       success: true,
-      medicines,
+      medicines: medicines.map(m => ({
+        ...m,
+        shelfLocation: {
+          ...m.shelfLocation,
+          category: m.shelfLocation.category?.name || null,
+        }
+      })),
     });
 
   } catch (error) {

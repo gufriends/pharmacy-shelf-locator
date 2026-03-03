@@ -37,15 +37,8 @@ export async function GET(): Promise<NextResponse<ShelfLocationResponse>> {
         { rowNumber: "asc" },
         { name: "asc" },
       ],
-      select: {
-        id: true,
-        name: true,
+      include: {
         category: true,
-        description: true,
-        aisleNumber: true,
-        rowNumber: true,
-        columns: true,
-        rows: true,
         _count: {
           select: {
             medicines: true,
@@ -56,18 +49,9 @@ export async function GET(): Promise<NextResponse<ShelfLocationResponse>> {
 
     return NextResponse.json({
       success: true,
-      locations: locations.map((loc: {
-        id: string;
-        name: string;
-        category: string | null;
-        description: string | null;
-        aisleNumber: string | null;
-        rowNumber: number | null;
-        columns: number;
-        rows: number;
-        _count: { medicines: number };
-      }) => ({
+      locations: locations.map((loc) => ({
         ...loc,
+        category: loc.category?.name || null,
         _count: {
           medicines: loc._count.medicines,
         },
@@ -132,24 +116,39 @@ export async function POST(request: Request): Promise<NextResponse<CreateShelfLo
     const location = await prisma.shelfLocation.create({
       data: {
         name: name.trim(),
-        category: category?.trim() || null,
+        category: category ? {
+          connectOrCreate: {
+            where: {
+              pharmacyId_name: {
+                pharmacyId: authResult.pharmacyId,
+                name: category.trim(),
+              },
+            },
+            create: {
+              name: category.trim(),
+              pharmacyId: authResult.pharmacyId,
+              color: "blue",
+            },
+          },
+        } : undefined,
         description: description?.trim() || null,
         aisleNumber: aisleNumber?.trim() || null,
         rowNumber: rowNumber ?? null,
         columns: columns ?? 5,
         rows: rows ?? 1,
-        pharmacyId: authResult.pharmacyId,
+        pharmacy: { connect: { id: authResult.pharmacyId } },
       },
-      select: {
-        id: true,
-        name: true,
+      include: {
         category: true,
       },
     });
 
     return NextResponse.json({
       success: true,
-      location,
+      location: {
+        ...location,
+        category: location.category?.name || null,
+      },
     });
 
   } catch (error) {

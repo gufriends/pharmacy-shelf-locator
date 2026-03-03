@@ -223,9 +223,9 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                             </svg>
                         </div>
                         <div>
-                            <CardTitle className="text-xl">Quick Setup</CardTitle>
+                            <CardTitle className="text-xl">Quick Setup (AI)</CardTitle>
                             <CardDescription>
-                                Take one photo, AI creates everything automatically
+                                Cukup ambil satu foto, AI akan mendeteksi kategori, lokasi, dan obat secara otomatis.
                             </CardDescription>
                         </div>
                     </div>
@@ -244,11 +244,11 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                             {/* Aisle Input */}
                             <div className="space-y-2">
                                 <Label htmlFor="aisle-quick" className="text-base font-medium">
-                                    Aisle Number (optional)
+                                    Nomor Aisle (opsional)
                                 </Label>
                                 <Input
                                     id="aisle-quick"
-                                    placeholder="e.g., 10"
+                                    placeholder="misalnya: 10"
                                     value={aisleNumber}
                                     onChange={(e) => setAisleNumber(e.target.value)}
                                     className="h-12 text-base"
@@ -267,8 +267,8 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
                                             />
                                         </svg>
-                                        <p className="text-base font-medium">Take a photo of the entire shelf</p>
-                                        <p className="text-sm">Include all category labels and medicines</p>
+                                        <p className="text-base font-medium">Ambil foto seluruh rak sekaligus</p>
+                                        <p className="text-sm">Pastikan label kategori dan obat terlihat jelas</p>
                                     </div>
                                 )}
 
@@ -289,8 +289,8 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                     <div className="flex items-center justify-center gap-3 py-4">
                                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                                         <div className="text-center">
-                                            <span className="text-base font-medium block">Analyzing entire shelf with AI...</span>
-                                            <span className="text-sm text-muted-foreground">Detecting categories, medicines, and positions</span>
+                                            <span className="text-base font-medium block">Menganalisis rak dengan AI...</span>
+                                            <span className="text-sm text-muted-foreground">Mendeteksi kategori, obat, dan posisi grid</span>
                                         </div>
                                     </div>
                                     <Skeleton className="h-4 w-full" />
@@ -309,14 +309,14 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                     d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
                                                 />
                                             </svg>
-                                            Open Camera
+                                            Buka Kamera
                                         </Button>
                                         <div className="relative">
                                             <div className="absolute inset-0 flex items-center">
                                                 <span className="w-full border-t" />
                                             </div>
                                             <div className="relative flex justify-center text-xs uppercase">
-                                                <span className="bg-card px-2 text-muted-foreground">or</span>
+                                                <span className="bg-card px-2 text-muted-foreground text-[10px] tracking-widest">atau</span>
                                             </div>
                                         </div>
                                         <Button size="lg" variant="outline" className="w-full h-14 text-base" onClick={() => fileInputRef.current?.click()}>
@@ -325,7 +325,7 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                            Upload from Gallery
+                                            Upload dari Galeri
                                         </Button>
                                         <input
                                             ref={fileInputRef}
@@ -340,13 +340,13 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                 {isCameraActive && (
                                     <div className="grid grid-cols-2 gap-3">
                                         <Button size="lg" variant="outline" className="h-14 text-base" onClick={stopCamera}>
-                                            Cancel
+                                            Batal
                                         </Button>
                                         <Button size="lg" className="h-14 text-base font-semibold" onClick={takePhoto}>
                                             <svg className="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                                                 <circle cx="12" cy="12" r="10" />
                                             </svg>
-                                            Capture
+                                            Ambil Foto
                                         </Button>
                                     </div>
                                 )}
@@ -359,13 +359,13 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                                 />
                                             </svg>
-                                            Retake
+                                            Ulangi
                                         </Button>
                                         <Button size="lg" className="h-14 text-base font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600" onClick={handleExtract}>
                                             <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
-                                            Quick Setup
+                                            Mulai AI Scan
                                         </Button>
                                     </div>
                                 )}
@@ -379,10 +379,10 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                             {/* Summary Bar */}
                             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
                                 <div>
-                                    <span className="text-sm font-medium">AI detected</span>
+                                    <span className="text-sm font-medium">AI mendeteksi:</span>
                                     <div className="flex gap-2 mt-1">
-                                        <Badge className="bg-amber-500 text-white">{activeShelvesCount} categories</Badge>
-                                        <Badge className="bg-orange-500 text-white">{activeMedicinesCount} medicines</Badge>
+                                        <Badge className="bg-amber-500 text-white">{activeShelvesCount} Rak/Kategori</Badge>
+                                        <Badge className="bg-orange-500 text-white">{activeMedicinesCount} Obat</Badge>
                                     </div>
                                 </div>
                                 {aisleNumber && (
@@ -421,10 +421,10 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                             {shelf.suggestedName}
                                                         </Badge>
                                                         <Badge variant="outline" className="text-xs">
-                                                            {shelf.medicines.length} medicines
+                                                            {shelf.medicines.length} obat
                                                         </Badge>
                                                         <Badge variant="outline" className="text-xs text-muted-foreground">
-                                                            {shelf.columns}×{shelf.rows} grid
+                                                            Grid {shelf.columns}×{shelf.rows}
                                                         </Badge>
                                                     </div>
                                                     {/* Medicine list preview */}
@@ -441,7 +441,7 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                                         ))}
                                                         {shelf.medicines.length > 5 && (
                                                             <span className="inline-block px-2 py-0.5 text-xs text-muted-foreground">
-                                                                +{shelf.medicines.length - 5} more
+                                                                +{shelf.medicines.length - 5} lainnya
                                                             </span>
                                                         )}
                                                     </div>
@@ -469,8 +469,8 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
 
                                 {detectedShelves.length === 0 && (
                                     <div className="text-center py-8 text-muted-foreground">
-                                        <p className="text-base">No categories detected</p>
-                                        <p className="text-sm">Try retaking the photo with clearer category labels</p>
+                                        <p className="text-base">Tidak ada kategori yang terdeteksi</p>
+                                        <p className="text-sm">Silakan ulangi foto dengan label kategori yang lebih jelas</p>
                                     </div>
                                 )}
                             </div>
@@ -486,7 +486,7 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                     <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Save All ({activeShelvesCount} categories, {activeMedicinesCount} medicines)
+                                    Simpan Semua ({activeShelvesCount} Rak, {activeMedicinesCount} Obat)
                                 </Button>
                                 <Button
                                     size="lg"
@@ -501,7 +501,7 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                     <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                                     </svg>
-                                    Back to Photo
+                                    Kembali ke Foto
                                 </Button>
                             </div>
                         </>
@@ -513,8 +513,8 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                             <div className="flex flex-col items-center justify-center gap-4">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
                                 <div className="text-center">
-                                    <p className="text-lg font-medium">Saving to database...</p>
-                                    <p className="text-sm text-muted-foreground">Creating shelf locations and mapping medicines</p>
+                                    <p className="text-lg font-medium">Menyimpan ke database...</p>
+                                    <p className="text-sm text-muted-foreground">Membuat lokasi rak dan memetakan obat-obatan</p>
                                 </div>
                             </div>
                             <Skeleton className="h-4 w-full" />
@@ -534,10 +534,10 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            Quick Setup Complete!
+                            Setup Selesai!
                         </DialogTitle>
                         <DialogDescription>
-                            Successfully created {successData?.locations} shelf locations with {successData?.medicines} medicines
+                            Berhasil membuat {successData?.locations} lokasi rak dengan {successData?.medicines} obat-obatan.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -549,14 +549,14 @@ export function QuickSetup({ onComplete }: { onComplete?: () => void }) {
                                         <span className="font-medium text-sm">{detail.category}</span>
                                         <span className="text-xs text-muted-foreground ml-2">({detail.locationName})</span>
                                     </div>
-                                    <Badge variant="secondary">{detail.medicineCount} items</Badge>
+                                    <Badge variant="secondary">{detail.medicineCount} item</Badge>
                                 </div>
                             ))}
                         </div>
                     )}
 
                     <Button onClick={handleSuccessClose} className="w-full h-12">
-                        Done — View Racks
+                        Selesai — Lihat Rak
                     </Button>
                 </DialogContent>
             </Dialog>

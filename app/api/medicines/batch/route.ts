@@ -83,7 +83,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<BatchResp
     // Verify shelf location exists AND belongs to active pharmacy
     const shelfLocation = await prisma.shelfLocation.findFirst({
       where: { id: shelfLocationId, pharmacyId: authResult.pharmacyId },
-      select: { id: true, name: true, category: true },
+      select: { id: true, name: true, category: { select: { name: true } } },
     });
 
     if (!shelfLocation) {
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<BatchResp
       shelfLocation: {
         id: shelfLocation.id,
         name: shelfLocation.name,
-        category: shelfLocation.category,
+        category: shelfLocation.category?.name || null,
       },
     });
 

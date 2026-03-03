@@ -56,7 +56,7 @@ function MedicineResultCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-base sm:text-lg text-slate-900 truncate">
+          <h4 className="font-semibold text-base sm:text-lg text-slate-900">
             {medicine.name}
           </h4>
           {medicine.dosage && (

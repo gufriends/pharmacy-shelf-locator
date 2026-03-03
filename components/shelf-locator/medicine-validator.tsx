@@ -20,7 +20,7 @@ import type { ShelfLocation, MedicineItemInput } from "@/lib/types";
 
 interface MedicineValidatorProps {
   selectedLocation: ShelfLocation;
-  capturedImage: string;
+  capturedImage: string | null;
   medicines: MedicineItemInput[];
   onSave: () => void;
   onBack: () => void;
@@ -161,9 +161,9 @@ export function MedicineValidator({
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <CardTitle className="text-xl">Review & Validate</CardTitle>
+              <CardTitle className="text-xl">Isi Obat ke Rak</CardTitle>
               <CardDescription>
-                Review extracted medicines for{" "}
+                Tambahkan daftar obat untuk rak{" "}
                 <Badge variant="secondary">{selectedLocation.name}</Badge>
               </CardDescription>
             </div>
@@ -189,7 +189,7 @@ export function MedicineValidator({
           {/* Image Preview */}
           <div className="relative aspect-[4/3] bg-muted rounded-lg overflow-hidden">
             <img
-              src={capturedImage}
+              src={capturedImage || ""}
               alt="Captured shelf"
               className="w-full h-full object-contain"
             />
@@ -431,13 +431,13 @@ export function MedicineValidator({
                 d="M11 17l-5-5m0 0l5-5m-5 5h12"
               />
             </svg>
-            Back to Image Capture
+            Kembali
           </Button>
         </CardFooter>
-      </Card>
+      </Card >
 
       {/* Success Dialog */}
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+      < Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog} >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -475,7 +475,7 @@ export function MedicineValidator({
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog >
     </>
   );
 }

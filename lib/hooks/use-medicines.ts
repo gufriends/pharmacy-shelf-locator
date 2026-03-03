@@ -14,7 +14,29 @@ export const queryKeys = {
   shelfLocations: ["shelf-locations"] as const,
   visualization: ["visualization"] as const,
   medicines: ["medicines"] as const,
+  dashboardStats: ["dashboard-stats"] as const,
 };
+
+export function useDashboardStats() {
+  return useQuery({
+    queryKey: queryKeys.dashboardStats,
+    queryFn: async () => {
+      const response = await fetch("/api/dashboard/stats");
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Gagal memuat statistik");
+      return data as {
+        stats: {
+          medicineCount: number;
+          rackCount: number;
+          categoryCount: number;
+          lowStockCount: number;
+          expiringSoonCount: number;
+        };
+        recentActivity: any[];
+      };
+    },
+  });
+}
 
 // Fetch shelf locations
 export function useShelfLocations() {
@@ -321,3 +343,145 @@ export function useQuickSetupSave() {
   });
 }
 
+// Update medicine position (for drag and drop)
+export function useUpdateMedicinePosition() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, positionX, positionY }: { id: string; positionX: number; positionY: number }) => {
+      const response = await fetch(`/api/medicines/${id}/position`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ positionX, positionY }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to update position");
+      return data.medicine;
+    },
+    // Optimistic Update
+    onMutate: async ({ id, positionX, positionY }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: queryKeys.visualization });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData<VisualizationData>(queryKeys.visualization);
+
+      // Optimistically update to the new value
+      if (previousData) {
+        queryClient.setQueryData<VisualizationData>(queryKeys.visualization, {
+          ...previousData,
+          allLocations: previousData.allLocations.map(location => ({
+            ...location,
+            medicines: location.medicines.map(med =>
+              med.id === id ? { ...med, positionX, positionY } : med
+            ),
+          })),
+        });
+      }
+
+      return { previousData };
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.visualization, context.previousData);
+      }
+    },
+    // Always refetch after error or success to ensure we have the correct data
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.visualization });
+    },
+  });
+}
+
+// Update medicine details
+export function useUpdateMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: { id: string; name?: string; dosage?: string | null; quantity?: number; notes?: string | null; categoryId?: string | null }) => {
+      const response = await fetch(`/api/medicines/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to update medicine");
+      return data.medicine;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.visualization });
+    },
+  });
+}
+
+// Delete medicine
+export function useDeleteMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/medicines/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to delete medicine");
+      return data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.visualization });
+    },
+  });
+}
+
+// Create single medicine
+export function useCreateMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (medicine: { shelfLocationId: string; name: string; dosage?: string | null; quantity?: number; notes?: string | null; positionX?: number | null; positionY?: number | null; categoryId?: string | null }) => {
+      const response = await fetch("/api/medicines", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(medicine),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to create medicine");
+      return data.medicine;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.visualization });
+    },
+  });
+}
+
+// Batch update shelf layout and medicine positions
+export function useUpdateShelfLayout() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      columns,
+      rows,
+      medicines
+    }: {
+      id: string;
+      columns: number;
+      rows: number;
+      medicines: Array<{ id: string; positionX: number | null; positionY: number | null }>;
+    }) => {
+      const response = await fetch(`/api/shelf-locations/${id}/batch-update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ columns, rows, medicines }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to update layout");
+      return data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.visualization });
+    },
+  });
+}

@@ -52,6 +52,7 @@ export async function GET(): Promise<NextResponse<VisualizationResponse>> {
         { name: "asc" },
       ],
       include: {
+        category: { select: { name: true } },
         medicines: {
           select: {
             id: true,
@@ -72,7 +73,7 @@ export async function GET(): Promise<NextResponse<VisualizationResponse>> {
     const allLocations: RackVisualization[] = locations.map((loc) => ({
       id: loc.id,
       name: loc.name,
-      category: loc.category,
+      category: (loc.category as any)?.name || null,
       aisleNumber: loc.aisleNumber,
       rowNumber: loc.rowNumber,
       columns: loc.columns ?? 5,

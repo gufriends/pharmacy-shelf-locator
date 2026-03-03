@@ -94,6 +94,7 @@ model Organization {
   members     Member[]
   invitations Invitation[]
   shelfLocations ShelfLocation[]
+  shelfCategories ShelfCategory[]
   inventoryAudits InventoryAudit[]
 
   @@map("organizations")
@@ -137,11 +138,37 @@ model Invitation {
 // Application Models (Scoped by Organization/Pharmacy)
 // ============================================
 
+model ShelfCategory {
+  id          String         @id @default(cuid())
+  name        String         // e.g., "Cardiology", "Antibiotics"
+  description String?
+  color       String?        // Hex color or Tailwind class
+  icon        String?        // Icon name
+  
+  // Multi-tenant scoping
+  pharmacyId  String?        // FK → Organization (pharmacy)
+  pharmacy    Organization?  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  shelfLocations ShelfLocation[]
+  medicineItems  MedicineItem[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([pharmacyId, name])
+  @@index([pharmacyId])
+  @@map("shelf_categories")
+}
+
 /// Physical shelf location in the pharmacy (e.g., Rack 1, Cardiology Section)
 model ShelfLocation {
   id          String         @id @default(cuid())
   name        String         // e.g., "Rack 1", "Shelf A"
-  category    String?        // e.g., "Cardiology", "Antibiotics", "General"
+  
+  // Link to Category
+  categoryId  String?
+  category    ShelfCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  
   description String?        // Optional description
   aisleNumber String?        // Optional aisle reference
   rowNumber   Int?           // Row number within the shelf
@@ -151,7 +178,7 @@ model ShelfLocation {
   rows        Int            @default(1) // Height of the rack
 
   // Multi-tenant scoping
-  pharmacyId  String?        // FK → Organization (pharmacy), optional for migration
+  pharmacyId  String?        // FK → Organization (pharmacy)
   pharmacy    Organization?  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime       @default(now())
@@ -160,7 +187,7 @@ model ShelfLocation {
   medicines   MedicineItem[]
 
   @@index([pharmacyId])
-  @@index([category])
+  @@index([categoryId])
   @@index([name])
   @@map("shelf_locations")
 }
@@ -175,6 +202,10 @@ model MedicineItem {
   expiryDate       DateTime?     // Expiry date if available
   notes            String?       // Additional notes
   
+  // Optional Category for Medicine as well
+  categoryId       String?
+  category         ShelfCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
   // Spatial Mapping for Visual Rack
   positionX        Int?          // 0-indexed column position (Left to Right)
   positionY        Int?          // 0-indexed row position (Top to Bottom)
@@ -190,6 +221,7 @@ model MedicineItem {
 
   @@index([name])
   @@index([shelfLocationId])
+  @@index([categoryId])
   @@map("medicine_items")
 }
 

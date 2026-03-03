@@ -18,7 +18,7 @@ export function ShelfLocator() {
 
   const handleLocationNext = useCallback(() => {
     if (selectedLocation) {
-      setCurrentStep("capture");
+      setCurrentStep("validate");
     }
   }, [selectedLocation]);
 
@@ -52,8 +52,8 @@ export function ShelfLocator() {
       {/* Progress Indicator */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-muted-foreground">Step {currentStep === "location" ? 1 : currentStep === "capture" ? 2 : 3} of 3</span>
-          <span className="text-sm font-medium capitalize">{currentStep}</span>
+          <span className="text-sm font-medium text-muted-foreground">Step {currentStep === "location" ? 1 : 2} of 2</span>
+          <span className="text-sm font-medium capitalize">{currentStep === "validate" ? "Isi Rak" : currentStep}</span>
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <div
@@ -61,9 +61,7 @@ export function ShelfLocator() {
             style={{
               width:
                 currentStep === "location"
-                  ? "33%"
-                  : currentStep === "capture"
-                  ? "66%"
+                  ? "50%"
                   : "100%",
             }}
           />
@@ -79,21 +77,13 @@ export function ShelfLocator() {
         />
       )}
 
-      {currentStep === "capture" && selectedLocation && (
-        <ImageCapture
-          selectedLocation={selectedLocation}
-          onCapture={handleCaptureComplete}
-          onBack={handleCaptureBack}
-        />
-      )}
-
-      {currentStep === "validate" && selectedLocation && capturedImage && (
+      {currentStep === "validate" && selectedLocation && (
         <MedicineValidator
           selectedLocation={selectedLocation}
-          capturedImage={capturedImage}
-          medicines={extractedMedicines}
+          capturedImage={null}
+          medicines={[]}
           onSave={handleSaveComplete}
-          onBack={handleValidateBack}
+          onBack={() => setCurrentStep("location")}
         />
       )}
     </div>

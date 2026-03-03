@@ -160,7 +160,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<AISearchR
         shelfLocation: {
           select: {
             name: true,
-            category: true,
+            category: {
+              select: { name: true }
+            },
           },
         },
       },
@@ -168,7 +170,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AISearchR
     });
 
     const medicineList = allMedicines
-      .map((m) => `${m.name}${m.dosage ? ` ${m.dosage}` : ""} (${m.shelfLocation.name})`)
+      .map((m) => `${m.name}${m.dosage ? ` ${m.dosage}` : ""} (${m.shelfLocation.name}${m.shelfLocation.category ? `, ${m.shelfLocation.category.name}` : ""})`)
       .join(", ");
 
     const aiResponse = await fetch(OPENROUTER_API_URL, {
@@ -240,7 +242,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AISearchR
           select: {
             id: true,
             name: true,
-            category: true,
+            category: { select: { name: true } },
             aisleNumber: true,
             rowNumber: true,
             columns: true,
@@ -288,6 +290,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<AISearchR
 
         return {
           ...med,
+          shelfLocation: {
+            ...med.shelfLocation,
+            category: med.shelfLocation.category?.name || null,
+          },
           confidence,
           locationGuide,
         };
