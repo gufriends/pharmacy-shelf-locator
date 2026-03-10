@@ -306,6 +306,39 @@ npm run db:studio    # Open Prisma Studio GUI
 - Configure proper CORS origins for production
 - Implement rate limiting for the vision API endpoint
 
+## Deployment
+
+### Vercel (Production)
+
+This project is deployed on Vercel. The Production environment is the live, user-facing version of the application.
+
+By default, pushing or merging changes into the production branch (`main`) triggers a production deployment automatically.
+
+```bash
+# Deploy to production manually via CLI
+vercel --prod
+```
+
+When a production deployment succeeds, Vercel updates the production domains to point to the new deployment immediately.
+
+**Production URLs:**
+- `rivpharma.gufriends.me` (custom domain)
+- `pharmacy-shelf-locator.vercel.app` (Vercel default)
+
+### Environment Variables (Production)
+
+Configure these in Vercel Dashboard → Project → Settings → Environment Variables:
+
+```env
+DATABASE_URL=
+OPENROUTER_API_KEY=
+BETTER_AUTH_SECRET=
+NEXT_PUBLIC_APP_URL=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+RESEND_API_KEY=
+```
+
 ## License
 
 MIT
