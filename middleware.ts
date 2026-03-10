@@ -6,6 +6,7 @@ export function middleware(request: NextRequest) {
     // Public routes that don't require authentication
     const publicPaths = [
         "/login",
+        "/forgot-password",
         "/reset-password",
         "/verify-email",
         "/accept-invitation",

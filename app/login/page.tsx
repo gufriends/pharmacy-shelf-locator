@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn, signUp, authClient } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,25 +60,6 @@ function LoginForm() {
             provider: "google",
             callbackURL: callbackUrl,
         });
-    };
-
-    const handleForgotPassword = async () => {
-        if (!email) {
-            setError("Masukkan email terlebih dahulu");
-            return;
-        }
-        setLoading(true);
-        setError(null);
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            await (authClient as any).forgetPassword({ email, redirectTo: "/reset-password" });
-            setError(null);
-            alert("Link reset password telah dikirim ke email Anda.");
-        } catch {
-            setError("Gagal mengirim email reset password.");
-        } finally {
-            setLoading(false);
-        }
     };
 
     if (showVerifyNotice) {
@@ -190,9 +172,9 @@ function LoginForm() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</Label>
                                 {mode === "login" && (
-                                    <button type="button" onClick={handleForgotPassword} className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 font-medium">
+                                    <Link href="/forgot-password" className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 font-medium">
                                         Lupa password?
-                                    </button>
+                                    </Link>
                                 )}
                             </div>
                             <div className="relative">
